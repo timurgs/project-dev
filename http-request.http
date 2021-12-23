@@ -1,0 +1,15 @@
+# примеры API-запросов
+
+@baseUrl = http://localhost:8000/api/v1
+
+###
+# создание продукта
+POST http://localhost:8000/api/v1/products/
+Content-Type: application/json
+
+{
+  "title": "Помидор",
+  "description": "Лучшие помидоры на рынке"
+}
+
+###
