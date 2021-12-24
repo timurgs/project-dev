@@ -64,7 +64,7 @@ Content-Type: application/json
 ###
 
 # обновляем записи на складе
-PATCH http://localhost:8000/api/v1/stocks/51/
+PATCH http://localhost:8000/api/v1/stocks/4/
 Content-Type: application/json
 
 {
@@ -85,5 +85,5 @@ Content-Type: application/json
 ###
 
 # поиск складов, где есть определенный продукт
-GET http://localhost:8000/api/v1/stocks/?products=помид
+GET http://localhost:8000/api/v1/stocks/?products=2
 Content-Type: application/json

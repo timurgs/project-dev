@@ -32,48 +32,26 @@ class StockSerializer(serializers.ModelSerializer):
                                         price=position['price'])
         return stock
 
-    def repeat_update_or_create(self, pos, old_pos, stock_param):
-        for i, position in enumerate(pos):
-            for j, old_position in enumerate(old_pos):
+    def update(self, instance, validated_data):
+        positions = validated_data.pop('positions')
+        stock = super().update(instance, validated_data)
+        old_positions = instance.positions.all()
+        for i, position in enumerate(positions):
+            for j, old_position in enumerate(old_positions):
                 if i == j:
-                    StockProduct.objects.update_or_create(stock=stock_param.id,
+                    StockProduct.objects.update_or_create(stock=stock.id,
                                                           product=old_position.product,
                                                           quantity=old_position.quantity,
                                                           price=old_position.price,
                                                           defaults={**position})
-
-    def update(self, instance, validated_data):
-        positions = validated_data.pop('positions')
-        stock = super().update(instance, validated_data)
-
-        old_positions = instance.positions.all()
-        if len(old_positions) == len(positions):
-            self.repeat_update_or_create(positions, old_positions, stock)
-
-        elif len(instance.positions.all()) > len(positions):
-            differ = len(instance.positions.all()) - len(positions)
-            for i in range(differ):
-                instance.positions.first().delete()
-
-            old_positions = instance.positions.all()
-            self.repeat_update_or_create(positions, old_positions, stock)
-
-        elif len(instance.positions.all()) < len(positions):
-            old_positions = instance.positions.all()
-            for i, old_position in enumerate(old_positions):
-                for j, position in enumerate(positions):
-                    for a in range(len(old_positions)):
-                        if j == a:
-                            StockProduct.objects.update_or_create(stock_id=stock.id,
-                                                                  product=old_position.product,
-                                                                  quantity=old_position.quantity,
-                                                                  price=old_position.price,
-                                                                  defaults={**position})
-                        if a == len(old_positions) - 1:
-                            StockProduct.objects.update_or_create(stock_id=stock.id,
-                                                                  product=position['product'],
-                                                                  quantity=position['quantity'],
-                                                                  price=position['price'])
-                break
+                if len(positions) > len(old_positions) and len(positions) - len(old_positions) == j + 1:
+                    StockProduct.objects.update_or_create(stock_id=stock.id,
+                                                          product=position['product'],
+                                                          quantity=position['quantity'],
+                                                          price=position['price'])
+                elif len(positions) < len(old_positions) and len(old_positions) - len(positions) == i + 1:
+                    differ = len(instance.positions.all()) - len(positions)
+                    for count in range(differ):
+                        instance.positions.last().delete()
 
         return stock
