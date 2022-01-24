@@ -1,12 +1,15 @@
-SECRET_KEY = ''
+import os
+
+
+SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 DATABASES = {
     'default': {
-        'ENGINE': '',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', ''),
+        'USER': os.getenv('POSTGRES_USER', ''),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
