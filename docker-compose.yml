@@ -7,21 +7,23 @@ services:
     image: new_python
     env_file:
       - .env
-#    command:
-#      - gunicorn stocks_products.wsgi -b 0.0.0.0:8000
+    ports:
+      - "8001:8000"
   postgres:
     image: postgres:11.0-alpine
     env_file:
       - .env
+#    command:
+#      - migra
 #    ports:
 #      - "5433:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
-  nginx:
-#    depends_on:
-#      - backend
-    image: nginx
-    ports:
-      - "8000:80"
+#  nginx:
+##    depends_on:
+##      - backend
+#    image: nginx
+#    ports:
+#      - "8000:80"
 volumes:
   pg-data:
